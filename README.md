@@ -113,4 +113,3 @@ Antes de entregar, completar los enlaces pendientes del informe con el repositor
 
 Andres Perez | Matricula: 2025-2077 - Seccion: 7 (SDE-7-V)
 Jhan Bautista | Matricula: 2025-2084 - Seccion: 7 (SDE-7-V)
-
