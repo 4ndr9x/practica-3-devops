@@ -109,8 +109,8 @@ Abrir http://localhost:3000. La imagen usa Node 24 Alpine, usuario `node`, depen
 
 Antes de entregar, completar los enlaces pendientes del informe con el repositorio, Pages y las ejecuciones reales roja y verde. Las pruebas locales no sustituyen la evidencia del pipeline en GitHub.
 
-## Referencias
+## Integrantes:
 
-- Plantilla oficial `plantilla-devops-itla.zip` suministrada por el docente.
-- [Workflows personalizados para Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages).
-- [Configurar el origen de publicación](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site).
+Andres Perez | Matricula: 2025-2077 - Seccion: 7 (SDE-7-V)
+Jhan Bautista | Matricula: 2025-2084 - Seccion: 7 (SDE-7-V)
+
