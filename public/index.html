@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tareas DevOps — ITLA</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 640px; margin: 40px auto; padding: 0 16px; }
+    h1 { color: #1f3b63; } span.hecha { text-decoration: line-through; color: #777; }
+    form { display: flex; gap: 8px; } input { flex: 1; padding: 8px; } button { padding: 8px 14px; }
+  </style>
+</head>
+<body>
+  <h1>Lista de tareas</h1>
+  <p id="aviso" role="status">Comprobando si la API está disponible…</p>
+  <p>Práctica 3: pruebas unitarias, integración, cobertura y despliegue automatizado.</p>
+  <form id="f"><input id="t" placeholder="Nueva tarea" maxlength="120" required disabled><button id="agregar" disabled>Agregar</button></form>
+  <ul id="l"></ul>
+  <script>
+    const lista = document.getElementById('l');
+    const aviso = document.getElementById('aviso');
+    const entrada = document.getElementById('t');
+    const agregar = document.getElementById('agregar');
+
+    async function solicitar(ruta, opciones) {
+      const respuesta = await fetch(ruta, opciones);
+      if (!respuesta.ok) {
+        throw new Error('No se pudo completar la operación (HTTP ' + respuesta.status + ').');
+      }
+      return respuesta;
+    }
+
+    async function cambiarTarea(id, metodo) {
+      try {
+        await solicitar('/api/tareas/' + id, { method: metodo });
+        await cargar();
+      } catch (error) {
+        aviso.textContent = error.message;
+      }
+    }
+
+    async function cargar() {
+      try {
+        const respuesta = await solicitar('/api/tareas');
+        const tareas = await respuesta.json();
+        if (!Array.isArray(tareas)) throw new Error('API no disponible');
+        entrada.disabled = false;
+        agregar.disabled = false;
+        aviso.textContent = 'API local conectada. Los datos se guardan en memoria y se pierden al reiniciar.';
+        lista.replaceChildren();
+        tareas.forEach(function (tarea) {
+          const li = document.createElement('li');
+          const texto = document.createElement('span');
+          texto.textContent = tarea.titulo + ' ';
+          if (tarea.completada) texto.className = 'hecha';
+          const alternar = document.createElement('button');
+          alternar.textContent = tarea.completada ? 'Marcar pendiente' : 'Completar';
+          alternar.onclick = function () { cambiarTarea(tarea.id, 'PATCH'); };
+          const eliminar = document.createElement('button');
+          eliminar.textContent = 'Eliminar';
+          eliminar.onclick = function () { cambiarTarea(tarea.id, 'DELETE'); };
+          li.append(texto, alternar, eliminar);
+          lista.appendChild(li);
+        });
+      } catch (error) {
+        entrada.disabled = true;
+        agregar.disabled = true;
+        aviso.textContent = 'Frontend estático: la API no está disponible aquí. Ejecuta npm start y abre http://localhost:3000 para gestionar tareas. GitHub Pages solo publica archivos estáticos.';
+      }
+    }
+
+    document.getElementById('f').onsubmit = async function (evento) {
+      evento.preventDefault();
+      try {
+        await solicitar('/api/tareas', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ titulo: entrada.value })
+        });
+        entrada.value = '';
+        await cargar();
+      } catch (error) {
+        aviso.textContent = error.message;
+      }
+    };
+    cargar();
+  </script>
+</body>
+</html>
